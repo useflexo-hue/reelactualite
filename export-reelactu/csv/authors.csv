@@ -1,0 +1,10 @@
+id,user_id,slug,display_name,role_label,bio,avatar_url,city,twitter,linkedin,email,created_at
+4ba25ef5-4768-48b0-82de-1a7a96a336d1,,jean-paul-mumbere,Jean-Paul Mumbere,Grand reporter — Nord-Kivu,"Reporter de terrain basé à Goma, il couvre depuis dix ans les conflits armés et les déplacements de population dans l'Est de la RDC.",,Goma,,,,2026-07-31 12:45:19.952296+00
+6330785f-96fb-40af-b233-a89ef0274c33,,esther-kavira,Esther Kavira,Cheffe de rubrique Santé,"Journaliste spécialisée en santé publique, elle a documenté les épidémies d'Ebola en Ituri et au Nord-Kivu.",,Bunia,,,,2026-07-31 12:45:19.952296+00
+00d1847d-b3bf-4e45-8a41-5e5fc644dbaa,,patrick-lwamba,Patrick Lwamba,Journaliste Justice et Gouvernance,Il suit les procès de la Haute Cour militaire et les dossiers de gouvernance à Kinshasa.,,Kinshasa,,,,2026-07-31 12:45:19.952296+00
+834b3c08-ce5d-4363-8459-01ad686f8c00,,sandrine-bahati,Sandrine Bahati,Reporter Économie — Sud-Kivu,Elle enquête sur les chaînes d'approvisionnement minières et l'économie informelle à Bukavu.,,Bukavu,,,,2026-07-31 12:45:19.952296+00
+54e75780-b018-4965-935b-7752e055847c,,redaction-reelactu,La Rédaction,Rédaction ReelActu,"Équipe éditoriale de ReelActu, média d'information de la RDC et des Grands Lacs.",,Goma,reelactu,,,2026-08-02 11:23:18.062688+00
+c4024581-a8d4-4a10-8657-43ec2b68431f,,daniel-micho-mulume,Daniel Micho Mulume,Rédacteur en chef ReelActu,Journaliste et rédacteur en chef de ReelActu.,,,michombero,,,2026-08-02 13:12:09.135423+00
+49265aaa-014e-4ab7-a772-f5f15368e341,,john-shindano,John Shindano,Journaliste ReelActu,,,,JohnShindano,,,2026-08-02 13:23:19.857286+00
+a673f354-bb52-4280-86fc-7f37217df5f9,,ghislain-watongoka,Ghislain Watongoka,Journaliste ReelActu,,,,ghislain_watongoka,,,2026-08-02 13:23:19.857286+00
+497619eb-3dc3-486f-b531-1c87abe9ec8f,,yvan-akimana,Yvan Akimana,Journaliste Sport,,,,IrAkimanaYvan,,,2026-08-02 13:23:19.857286+00

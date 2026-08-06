@@ -1,0 +1,270 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * ReelActu 2.0 — Design system
+ * Presse internationale : encre sur papier, un seul rouge signal.
+ * Toutes les couleurs sont en oklch et pilotées par tokens sémantiques.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+
+  --font-display: "Source Serif 4", Georgia, serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-rule: var(--rule);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-signal: var(--signal);
+  --color-signal-foreground: var(--signal-foreground);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-foreground: var(--brand-blue-foreground);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+}
+
+:root {
+  --radius: 0.125rem;
+
+  --paper: oklch(0.988 0.004 85);
+  --ink: oklch(0.17 0.012 60);
+  --surface: oklch(0.955 0.006 85);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--ink);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--ink);
+
+  --primary: var(--ink);
+  --primary-foreground: oklch(0.988 0.004 85);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface);
+  --muted-foreground: oklch(0.48 0.012 60);
+  --accent: var(--surface);
+  --accent-foreground: var(--ink);
+
+  --signal: oklch(0.53 0.213 27.5);
+  --signal-foreground: oklch(0.99 0 0);
+  --brand-blue: oklch(0.32 0.08 255);
+  --brand-blue-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.53 0.213 27.5);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  --border: oklch(0.9 0.008 75);
+  --rule: oklch(0.82 0.01 75);
+  --input: oklch(0.9 0.008 75);
+  --ring: oklch(0.53 0.213 27.5);
+}
+
+.dark {
+  --paper: oklch(0.16 0.008 60);
+  --ink: oklch(0.95 0.004 85);
+  --surface: oklch(0.22 0.01 60);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: oklch(0.2 0.01 60);
+  --card-foreground: var(--ink);
+  --popover: oklch(0.2 0.01 60);
+  --popover-foreground: var(--ink);
+
+  --primary: var(--ink);
+  --primary-foreground: oklch(0.16 0.008 60);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface);
+  --muted-foreground: oklch(0.7 0.01 75);
+  --accent: var(--surface);
+  --accent-foreground: var(--ink);
+
+  --signal: oklch(0.62 0.2 27.5);
+  --signal-foreground: oklch(0.14 0 0);
+  --brand-blue: oklch(0.38 0.09 255);
+  --brand-blue-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.62 0.2 27.5);
+  --destructive-foreground: oklch(0.14 0 0);
+
+  --border: oklch(0.3 0.01 60);
+  --rule: oklch(0.36 0.01 60);
+  --input: oklch(0.3 0.01 60);
+  --ring: oklch(0.62 0.2 27.5);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-signal-foreground);
+  }
+}
+
+/* Surtitre de rubrique */
+@utility kicker {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+}
+
+@utility kicker-muted {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+/* Filet de séparation éditorial */
+@utility rule-top {
+  border-top: 1px solid var(--color-rule);
+}
+
+@utility rule-heavy {
+  border-top: 3px solid var(--color-foreground);
+}
+
+/* Lien titre : soulignement au survol, jamais de couleur criarde */
+@utility headline-link {
+  display: block;
+  text-decoration: none;
+  text-decoration-color: var(--color-rule);
+  text-underline-offset: 3px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Corps d'article long format */
+@utility prose-article {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--color-foreground);
+
+  & p {
+    margin-bottom: 1.25rem;
+  }
+
+  & p:first-of-type::first-letter {
+    font-family: var(--font-display);
+    font-size: 3.2rem;
+    line-height: 0.85;
+    font-weight: 600;
+    float: left;
+    padding-right: 0.5rem;
+    padding-top: 0.35rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .prose-article {
+    font-size: 1.1875rem;
+  }
+}
+
+/* Fil « Dernière minute » : défilement continu */
+@utility ticker-window {
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent 0, #000 1.5rem, #000 calc(100% - 2rem), transparent 100%);
+}
+
+@utility ticker-track {
+  display: flex;
+  width: max-content;
+  animation: reelactu-ticker 45s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+@utility ticker-item {
+  flex: none;
+  padding-right: 3rem;
+  white-space: nowrap;
+}
+
+@utility ticker-dot {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: reelactu-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes reelactu-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes reelactu-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track, .ticker-dot { animation: none; }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

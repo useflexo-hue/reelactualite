@@ -1,0 +1,31 @@
+id,slug,name,kind,parent_id,position,description,created_at
+ef746f47-5f53-4346-b157-b175be7fcf5b,rdc,Actualités RDC,region,,1,,2026-07-31 12:45:19.952296+00
+a0cf52ad-61e8-4537-8f09-c2d4d8d86980,afrique,Afrique,region,,5,,2026-07-31 12:45:19.952296+00
+035650b8-4dc9-4522-aa9e-2ecab1a30571,monde,Monde,region,,6,,2026-07-31 12:45:19.952296+00
+a09b5ee2-27ae-4ddb-b057-04d88321d28e,politique,Politique,theme,,7,,2026-07-31 12:45:19.952296+00
+578a4dc1-5069-4500-b734-d675df9be940,guerre-securite,Guerre et Sécurité,theme,,8,,2026-07-31 12:45:19.952296+00
+88e488f2-f5d8-42f2-9929-b16c13e10693,economie,Économie,theme,,9,,2026-07-31 12:45:19.952296+00
+483c6016-e901-488d-ba50-48aad757557c,sante,Santé,theme,,10,,2026-07-31 12:45:19.952296+00
+025c9ef1-9892-4d71-85e5-e0487b868ec2,justice,Justice,theme,,11,,2026-07-31 12:45:19.952296+00
+09f745e7-e00a-409c-9e36-80c796ce1f01,environnement,Environnement,theme,,12,,2026-07-31 12:45:19.952296+00
+1d8fd791-c61c-4884-924e-f0704f68d3ea,culture,Culture,theme,,13,,2026-07-31 12:45:19.952296+00
+a719fe5f-a763-47b8-9fd8-352d09061bea,sport,Sport,theme,,14,,2026-07-31 12:45:19.952296+00
+fe9719a8-01fe-4ec7-a344-f81db679f2d6,investigations,Investigations,format,,15,,2026-07-31 12:45:19.952296+00
+6c581a08-748a-4508-b066-23359a5e2c4e,reportages,Reportages,format,,16,,2026-07-31 12:45:19.952296+00
+13002252-7e53-4c26-b94e-e3b99be666e4,analyses,Analyses,format,,17,,2026-07-31 12:45:19.952296+00
+c54f5e99-334c-4565-9acf-7c1fa361143b,opinions,Opinions,format,,18,,2026-07-31 12:45:19.952296+00
+df04a735-d802-4b83-94e3-48238f3af4a8,editoriaux,Éditoriaux,format,,19,,2026-07-31 12:45:19.952296+00
+cc3b3143-d2ab-4b75-8add-e0a121fb1b1f,interviews,Interviews,format,,20,,2026-07-31 12:45:19.952296+00
+ab0473f3-0a57-438f-8f8b-c370b4d76f5c,videos,Vidéos,media,,21,,2026-07-31 12:45:19.952296+00
+d0c7c863-95eb-4460-a19b-d601c0277d9d,podcasts,Podcasts,media,,22,,2026-07-31 12:45:19.952296+00
+263e1868-1660-4714-8b11-eda4b9c10044,photos,Photos,media,,23,,2026-07-31 12:45:19.952296+00
+89288d0f-6e5a-4699-a1f0-b436ff631f5c,direct,Directs,media,,24,,2026-07-31 12:45:19.952296+00
+94774c3a-d7ab-4942-9f7b-1c4534f6ea19,nord-kivu,Nord-Kivu,region,ef746f47-5f53-4346-b157-b175be7fcf5b,2,,2026-07-31 12:45:19.952296+00
+19d85c47-3e2d-4417-ad36-6457dc9bda4c,sud-kivu,Sud-Kivu,region,ef746f47-5f53-4346-b157-b175be7fcf5b,3,,2026-07-31 12:45:19.952296+00
+16a13640-634d-4a36-92a3-1574ed0848dd,ituri,Ituri,region,ef746f47-5f53-4346-b157-b175be7fcf5b,4,,2026-07-31 12:45:19.952296+00
+83a1c6b5-fb20-4b26-9cdd-9c5370cd95c2,societe,Société,theme,,45,"Vie sociale, éducation, humanitaire et communautés en RDC",2026-08-02 15:43:17.767337+00
+ca06044b-45a8-462a-adcf-43f59c8df093,defense,Défense,theme,,26,,2026-08-04 15:11:16.616393+00
+f85858c8-d6ad-48d8-850d-69f28b75913c,securite,Sécurité,theme,,27,,2026-08-04 15:11:16.616393+00
+65df35f4-289f-4a06-8b4d-8e3c510c68d3,fact-check,Fact-check,format,,28,,2026-08-04 15:11:16.616393+00
+f115e244-3367-4f44-a55f-4fe0ebe32d17,decouverte,Découverte,theme,,29,,2026-08-04 15:11:16.616393+00
+27d3b47e-ee63-4dd8-affd-c5196991c452,nation,Nation,region,,30,,2026-08-04 15:11:16.616393+00
