@@ -7,6 +7,7 @@
     "dev": "node --env-file=.env.local node_modules/.bin/vite dev",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "build:node": "NITRO_PRESET=node-server vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."

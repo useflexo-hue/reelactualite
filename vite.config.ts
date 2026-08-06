@@ -12,4 +12,8 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Lovable's own build pipeline uses the default cloudflare-module preset.
+  // Set NITRO_PRESET=node-server (see `bun run build:node`) to build a plain
+  // Node.js server bundle instead, for self-hosting (e.g. the VPS deploy).
+  ...(process.env.NITRO_PRESET ? { nitro: { preset: process.env.NITRO_PRESET } } : {}),
 });

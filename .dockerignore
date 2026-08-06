@@ -1,0 +1,10 @@
+node_modules
+.output
+dist
+.tanstack
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+*.md
