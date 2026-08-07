@@ -4,7 +4,9 @@ services:
     # and published to GitHub Container Registry, so hosts that only fetch a
     # single compose file (no git clone / build context) can still deploy it.
     image: ghcr.io/useflexo-hue/reelactualite:latest
-    container_name: reeactu
+    # No container_name here on purpose: Hostinger's Docker Manager keeps a
+    # separate "application" per compose project, and a fixed container_name
+    # collides across every app that reuses it, silently breaking deploys.
     restart: unless-stopped
     ports:
       - "${HOST_PORT:-3010}:3000"
