@@ -37,9 +37,11 @@ jobs:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          # These are the public Supabase anon/publishable values (safe to
+          # expose client-side) so the build doesn't depend on repo secrets.
           build-args: |
-            VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
-            VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-            VITE_SUPABASE_PROJECT_ID=${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+            VITE_SUPABASE_URL=https://drtqfhzmaianmhiiqgxa.supabase.co
+            VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_1jHcGqlpBCh8QABRccn7oQ_iyqfb9VN
+            VITE_SUPABASE_PROJECT_ID=drtqfhzmaianmhiiqgxa
           cache-from: type=gha
           cache-to: type=gha,mode=max

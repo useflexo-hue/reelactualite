@@ -3,7 +3,7 @@ services:
     # Pre-built by .github/workflows/docker-publish.yml on every push to main
     # and published to GitHub Container Registry, so hosts that only fetch a
     # single compose file (no git clone / build context) can still deploy it.
-    image: ghcr.io/iamnadavjunior/reelactu:latest
+    image: ghcr.io/useflexo-hue/reelactualite:latest
     container_name: reeactu
     restart: unless-stopped
     ports:
