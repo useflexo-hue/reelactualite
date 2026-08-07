@@ -1,17 +1,17 @@
 services:
   reeactu:
-    build:
-      context: .
-      args:
-        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
-        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY}
-        VITE_SUPABASE_PROJECT_ID: ${VITE_SUPABASE_PROJECT_ID}
+    # Pre-built by .github/workflows/docker-publish.yml on every push to main
+    # and published to GitHub Container Registry, so hosts that only fetch a
+    # single compose file (no git clone / build context) can still deploy it.
+    image: ghcr.io/iamnadavjunior/reelactu:latest
     container_name: reeactu
     restart: unless-stopped
     ports:
       - "${HOST_PORT:-3010}:3000"
     environment:
       PORT: 3000
-      SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_PUBLISHABLE_KEY: ${SUPABASE_PUBLISHABLE_KEY}
+      SUPABASE_URL: ${SUPABASE_URL:-https://drtqfhzmaianmhiiqgxa.supabase.co}
+      SUPABASE_PUBLISHABLE_KEY: ${SUPABASE_PUBLISHABLE_KEY:-sb_publishable_1jHcGqlpBCh8QABRccn7oQ_iyqfb9VN}
+      # Real secret must be set in Hostinger's Environment tab (or a local .env
+      # on a self-managed server) — never committed here.
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
