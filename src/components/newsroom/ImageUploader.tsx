@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ACCEPT_ATTR, mediaUrl } from "@/lib/image";
+import { uuid } from "@/lib/utils";
 
 const MAX_EDGE = 2000;
 
@@ -60,7 +61,7 @@ export function ImageUploader({
     setBusy(true);
     try {
       const { blob, ext } = await processImage(file);
-      const path = `${new Date().getFullYear()}/${crypto.randomUUID()}.${ext}`;
+      const path = `${new Date().getFullYear()}/${uuid()}.${ext}`;
       const { error } = await supabase.storage
         .from("article-images")
         .upload(path, blob, { contentType: blob.type || "image/webp", upsert: false });

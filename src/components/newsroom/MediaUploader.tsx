@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { mediaUrl } from "@/lib/image";
+import { uuid } from "@/lib/utils";
 import type { SponsorMediaType } from "@/lib/ads";
 
 const MAX_EDGE = 1600;
@@ -84,7 +85,7 @@ export function MediaUploader({
         blob = out.blob;
         ext = out.ext;
       }
-      const path = `publicite/${new Date().getFullYear()}/${crypto.randomUUID()}.${ext}`;
+      const path = `publicite/${new Date().getFullYear()}/${uuid()}.${ext}`;
       const { error } = await supabase.storage
         .from("article-images")
         .upload(path, blob, {
