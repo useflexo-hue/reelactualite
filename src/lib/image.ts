@@ -34,6 +34,17 @@ export const IMAGE_FALLBACK =
     `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"><rect width="100%" height="100%" fill="#e7e5e4"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="48" fill="#a8a29e">ReelActu</text></svg>`,
   );
 
+/**
+ * Préfixe historique des médias hébergés par le CDN interne de Lovable
+ * (images importées via l'éditeur Lovable avant la migration vers le bucket
+ * Supabase `article-images`). Ces chemins sont stockés en base sous forme
+ * relative (ex. `/__l5e/assets-v1/…`) mais n'existent que sur le domaine
+ * Lovable d'origine : ils doivent donc rester absolus vers ce domaine plutôt
+ * que d'être résolus contre l'origine du site auto-hébergé.
+ */
+const LOVABLE_ASSET_PREFIX = "/__l5e/";
+const LOVABLE_ASSET_ORIGIN = "https://reelactu-afrique-prime.lovable.app";
+
 /** Nettoie et sécurise une URL d'image, quelle que soit sa provenance. */
 export function normalizeImageUrl(src?: string | null): string | null {
   if (!src) return null;
@@ -41,6 +52,7 @@ export function normalizeImageUrl(src?: string | null): string | null {
   if (!raw) return null;
   if (raw.startsWith("data:") || raw.startsWith("blob:")) return raw;
   if (raw.startsWith("//")) return `https:${raw}`;
+  if (raw.startsWith(LOVABLE_ASSET_PREFIX)) return `${LOVABLE_ASSET_ORIGIN}${raw}`;
   if (raw.startsWith("/")) return raw;
   if (/^https?:\/\//i.test(raw)) return raw.replace(/^http:\/\//i, "https://");
   return `https://${raw}`;
