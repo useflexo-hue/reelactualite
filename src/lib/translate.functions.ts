@@ -23,35 +23,43 @@ export const translateArticle = createServerFn({ method: "POST" })
     body: String(data.body).slice(0, 20000),
   }))
   .handler(async ({ data }): Promise<TranslateResult> => {
-    const apiKey = process.env["LOVABLE_API_KEY"];
+    const apiKey = process.env["GEMINI_API_KEY"];
     if (!apiKey) throw new Error("Traduction indisponible");
 
     const source = JSON.stringify({ title: data.title, dek: data.dek, body: data.body });
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          {
-            role: "system",
-            content:
-              "Tu es traducteur de presse. Traduis fidèlement le JSON fourni vers la langue demandée. " +
-              "Conserve les sauts de ligne doubles du champ body, les noms propres et les sigles. " +
-              "Réponds UNIQUEMENT avec un JSON valide {\"title\":string,\"dek\":string|null,\"body\":string}.",
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [
+              {
+                text:
+                  "Tu es traducteur de presse. Traduis fidèlement le JSON fourni vers la langue demandée. " +
+                  "Conserve les sauts de ligne doubles du champ body, les noms propres et les sigles. " +
+                  "Réponds UNIQUEMENT avec un JSON valide {\"title\":string,\"dek\":string|null,\"body\":string}.",
+              },
+            ],
           },
-          { role: "user", content: `Langue cible: ${data.lang}\n\n${source}` },
-        ],
-      }),
-    });
+          contents: [
+            { role: "user", parts: [{ text: `Langue cible: ${data.lang}\n\n${source}` }] },
+          ],
+          generationConfig: { responseMimeType: "application/json" },
+        }),
+      },
+    );
 
     if (res.status === 429) throw new Error("Trop de demandes, réessayez dans un instant.");
-    if (res.status === 402) throw new Error("Crédits IA épuisés.");
+    if (res.status === 402 || res.status === 403) throw new Error("Crédits IA épuisés.");
     if (!res.ok) throw new Error("Échec de la traduction");
 
-    const json = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-    const raw = json.choices?.[0]?.message?.content ?? "";
+    const json = (await res.json()) as {
+      candidates?: { content?: { parts?: { text?: string }[] } }[];
+    };
+    const raw = json.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
     const cleaned = raw.replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
 
     try {

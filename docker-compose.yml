@@ -17,3 +17,7 @@ services:
       # Real secret must be set in Hostinger's Environment tab (or a local .env
       # on a self-managed server) — never committed here.
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      # Google AI Studio key (https://aistudio.google.com/apikey), used for
+      # article translation. Lovable's own LOVABLE_API_KEY can't be reused
+      # here since self-hosted deploys run outside Lovable's Edge Functions.
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
