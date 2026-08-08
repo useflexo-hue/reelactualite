@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 export function SiteFooter() {
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   return (
     <footer className="mt-16 border-t border-rule bg-secondary">
@@ -25,24 +26,43 @@ export function SiteFooter() {
           </div>
 
 
-          {NAV_GROUPS.map((group) => (
-            <div key={group.title}>
-              <p className="kicker-muted mb-2">{group.title}</p>
-              <ul className="space-y-1.5">
-                {group.items.map((item) => (
-                  <li key={item.slug}>
-                    <Link
-                      to="/category/$slug"
-                      params={{ slug: item.slug }}
-                      className="font-sans text-sm text-foreground/80 hover:text-signal"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {NAV_GROUPS.map((group) => {
+            const groupOpen = openGroup === group.title;
+            const contentId = `footer-group-${group.title.toLowerCase().replace(/\s+/g, "-")}`;
+            return (
+              <div key={group.title}>
+                <button
+                  type="button"
+                  onClick={() => setOpenGroup((v) => (v === group.title ? null : group.title))}
+                  aria-expanded={groupOpen}
+                  aria-controls={contentId}
+                  className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-left md:cursor-default md:pointer-events-none"
+                >
+                  <span className="kicker-muted mb-2">{group.title}</span>
+                  <ChevronDown
+                    aria-hidden
+                    className={cn(
+                      "size-5 shrink-0 text-signal transition-transform md:hidden",
+                      groupOpen && "rotate-180",
+                    )}
+                  />
+                </button>
+                <ul id={contentId} className={cn("space-y-1.5 md:!block", !groupOpen && "hidden")}>
+                  {group.items.map((item) => (
+                    <li key={item.slug}>
+                      <Link
+                        to="/category/$slug"
+                        params={{ slug: item.slug }}
+                        className="font-sans text-sm text-foreground/80 hover:text-signal"
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
         <div className="rule-top mt-8 grid gap-8 pt-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
