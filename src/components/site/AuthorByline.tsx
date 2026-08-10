@@ -39,14 +39,19 @@ function XIcon({ className }: { className?: string }) {
 
 export function AuthorByline({
   author,
+  coAuthors,
   size = "default",
 }: {
   author: BylineAuthor | null | undefined;
+  coAuthors?: { display_name: string }[];
   size?: "default" | "compact";
 }) {
   if (!author) return null;
   const handle = xHandle(author);
   const isCompact = size === "compact";
+  const bylineNames = [author.display_name, ...(coAuthors ?? []).map((c) => c.display_name)].join(
+    " et ",
+  );
 
   return (
     <div className="flex items-center gap-3">
@@ -71,7 +76,7 @@ export function AuthorByline({
 
       <div className="min-w-0 font-sans">
         <p className="truncate text-sm font-semibold text-foreground">
-          Par {author.display_name}
+          Par {bylineNames}
         </p>
         <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
           {author.role_label ? <span className="truncate">{author.role_label}</span> : null}

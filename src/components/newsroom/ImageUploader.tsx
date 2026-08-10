@@ -7,7 +7,7 @@ import { uuid } from "@/lib/utils";
 const MAX_EDGE = 2000;
 
 /** Convertit n'importe quel fichier image en WebP optimisé (HEIC/TIFF inclus). */
-async function processImage(file: File): Promise<{ blob: Blob; ext: string }> {
+export async function processImage(file: File): Promise<{ blob: Blob; ext: string }> {
   // SVG : pas de rasterisation, on garde le vectoriel tel quel.
   if (file.type === "image/svg+xml" || /\.svg$/i.test(file.name)) {
     return { blob: file, ext: "svg" };

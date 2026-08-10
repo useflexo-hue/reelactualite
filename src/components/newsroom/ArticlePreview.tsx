@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SmartImage } from "@/components/site/SmartImage";
+import { ArticleBody } from "@/components/site/ArticleBody";
 import { formatDateTime } from "@/lib/format";
 
 type PreviewData = {
@@ -43,11 +44,6 @@ export function ArticlePreview({
   onConfirm,
   busy = false,
 }: Props) {
-  const paragraphs = (data.body ?? "")
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .filter(Boolean);
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[520px]">
@@ -117,12 +113,11 @@ export function ArticlePreview({
             </p>
 
             <div className="space-y-3 border-t border-rule pt-3">
-              {paragraphs.length > 0 ? (
-                paragraphs.map((p, i) => (
-                  <p key={i} className="font-serif text-[16px] leading-[1.7]">
-                    {p}
-                  </p>
-                ))
+              {(data.body ?? "").trim() ? (
+                <ArticleBody
+                  body={data.body}
+                  paragraphClassName="font-serif text-[16px] leading-[1.7]"
+                />
               ) : (
                 <p className="text-sm italic text-muted-foreground">Aucun contenu saisi.</p>
               )}

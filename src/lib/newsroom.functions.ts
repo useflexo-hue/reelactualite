@@ -1,5 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
+
+type SupabaseServerClient = SupabaseClient<Database>;
 
 export type NewsroomArticle = {
   id: string;
@@ -11,6 +15,7 @@ export type NewsroomArticle = {
   cover_credit: string | null;
   category_id: string | null;
   author_id: string | null;
+  co_author_ids: string[];
   status: "brouillon" | "relecture" | "valide" | "publie";
   published_at: string | null;
   location: string | null;
@@ -75,13 +80,21 @@ export const getNewsroomArticle = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { id: string }) => input)
   .handler(async ({ data, context }): Promise<NewsroomArticle | null> => {
-    const { data: row, error } = await context.supabase
-      .from("articles")
-      .select(EDIT_SELECT)
-      .eq("id", data.id)
-      .maybeSingle();
+    const [{ data: row, error }, { data: coAuthors, error: coAuthorsError }] = await Promise.all([
+      context.supabase.from("articles").select(EDIT_SELECT).eq("id", data.id).maybeSingle(),
+      context.supabase
+        .from("article_authors")
+        .select("author_id")
+        .eq("article_id", data.id)
+        .order("position"),
+    ]);
     if (error) throw new Error(error.message);
-    return (row ?? null) as unknown as NewsroomArticle | null;
+    if (coAuthorsError) throw new Error(coAuthorsError.message);
+    if (!row) return null;
+    return {
+      ...row,
+      co_author_ids: (coAuthors ?? []).map((c) => c.author_id),
+    } as unknown as NewsroomArticle;
   });
 
 export type ArticleInput = {
@@ -94,6 +107,7 @@ export type ArticleInput = {
   cover_credit: string | null;
   category_id: string | null;
   author_id: string | null;
+  co_author_ids: string[];
   status: NewsroomArticle["status"];
   location: string | null;
   reading_minutes: number;
@@ -109,12 +123,35 @@ function validate(input: ArticleInput): ArticleInput {
   return input;
 }
 
+async function syncCoAuthors(
+  supabase: SupabaseServerClient,
+  articleId: string,
+  primaryAuthorId: string | null,
+  coAuthorIds: string[],
+) {
+  const { error: deleteError } = await supabase
+    .from("article_authors")
+    .delete()
+    .eq("article_id", articleId);
+  if (deleteError) throw new Error(deleteError.message);
+
+  const uniqueIds = Array.from(new Set(coAuthorIds.filter(Boolean))).filter(
+    (aid) => aid !== primaryAuthorId,
+  );
+  if (uniqueIds.length === 0) return;
+
+  const { error: insertError } = await supabase
+    .from("article_authors")
+    .insert(uniqueIds.map((author_id, position) => ({ article_id: articleId, author_id, position })));
+  if (insertError) throw new Error(insertError.message);
+}
+
 export const saveNewsroomArticle = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: ArticleInput) => validate(input))
   .handler(async ({ data, context }): Promise<{ id: string }> => {
     const { supabase, userId } = context;
-    const { id, ...fields } = data;
+    const { id, co_author_ids, ...fields } = data;
 
     const publishedAt =
       fields.status === "publie" ? new Date().toISOString() : null;
@@ -136,6 +173,7 @@ export const saveNewsroomArticle = createServerFn({ method: "POST" })
         .update({ ...fields, published_at: keepDate })
         .eq("id", id);
       if (error) throw new Error(error.message);
+      await syncCoAuthors(supabase, id, fields.author_id, co_author_ids ?? []);
       return { id };
     }
 
@@ -145,6 +183,7 @@ export const saveNewsroomArticle = createServerFn({ method: "POST" })
       .select("id")
       .single();
     if (error) throw new Error(error.message);
+    await syncCoAuthors(supabase, inserted.id, fields.author_id, co_author_ids ?? []);
     return { id: inserted.id };
   });
 

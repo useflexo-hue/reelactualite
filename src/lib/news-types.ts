@@ -33,6 +33,12 @@ export type ArticleFull = ArticleCardData & {
     avatar_url: string | null;
     twitter: string | null;
   } | null;
+  coAuthors: {
+    slug: string;
+    display_name: string;
+    avatar_url: string | null;
+    twitter: string | null;
+  }[];
   tags: { slug: string; name: string }[];
 };
 

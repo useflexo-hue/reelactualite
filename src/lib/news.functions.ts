@@ -131,7 +131,7 @@ export const getArticle = createServerFn({ method: "GET" })
       const { data: rows } = await db
         .from("articles")
         .select(
-          "id,slug,title,dek,body,cover_url,cover_credit,published_at,location,reading_minutes,is_breaking,seo_title,seo_description,view_count,share_count,category:categories!articles_category_id_fkey(slug,name),author:authors(slug,display_name,role_label,bio,city,avatar_url,twitter),article_tags(tags(slug,name))",
+          "id,slug,title,dek,body,cover_url,cover_credit,published_at,location,reading_minutes,is_breaking,seo_title,seo_description,view_count,share_count,category:categories!articles_category_id_fkey(slug,name),author:authors(slug,display_name,role_label,bio,city,avatar_url,twitter),article_tags(tags(slug,name)),article_authors(position,authors(slug,display_name,avatar_url,twitter))",
         )
         .eq("slug", data.slug)
         .eq("status", "publie")
@@ -145,7 +145,25 @@ export const getArticle = createServerFn({ method: "GET" })
         .map((t) => t.tags)
         .filter((t): t is { slug: string; name: string } => Boolean(t));
 
-      const article = { ...row, tags } as unknown as ArticleFull;
+      const coAuthors = (
+        (row.article_authors as {
+          position: number;
+          authors: {
+            slug: string;
+            display_name: string;
+            avatar_url: string | null;
+            twitter: string | null;
+          } | null;
+        }[]) ?? []
+      )
+        .sort((a, b) => a.position - b.position)
+        .map((c) => c.authors)
+        .filter(
+          (a): a is { slug: string; display_name: string; avatar_url: string | null; twitter: string | null } =>
+            Boolean(a),
+        );
+
+      const article = { ...row, tags, coAuthors } as unknown as ArticleFull;
 
       const catSlug = article.category?.slug;
       let related: ArticleCardData[] = [];

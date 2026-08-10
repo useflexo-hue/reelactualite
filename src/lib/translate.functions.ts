@@ -40,6 +40,8 @@ export const translateArticle = createServerFn({ method: "POST" })
                 text:
                   "Tu es traducteur de presse. Traduis fidèlement le JSON fourni vers la langue demandée. " +
                   "Conserve les sauts de ligne doubles du champ body, les noms propres et les sigles. " +
+                  "Ne traduis JAMAIS et recopie tels quels les marqueurs de médias du body, " +
+                  "sous la forme exacte ![légende](url) ou [[video:url]] (légende traduisible, url intacte). " +
                   "Réponds UNIQUEMENT avec un JSON valide {\"title\":string,\"dek\":string|null,\"body\":string}.",
               },
             ],

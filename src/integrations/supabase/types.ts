@@ -32,6 +32,39 @@ export type Database = {
         }
         Relationships: []
       }
+      article_authors: {
+        Row: {
+          article_id: string
+          author_id: string
+          position: number
+        }
+        Insert: {
+          article_id: string
+          author_id: string
+          position?: number
+        }
+        Update: {
+          article_id?: string
+          author_id?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_authors_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_authors_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "authors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       article_categories: {
         Row: {
           article_id: string

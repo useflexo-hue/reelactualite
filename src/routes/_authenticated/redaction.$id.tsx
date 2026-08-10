@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getNewsroomArticle,
   getNewsroomContext,
@@ -13,6 +13,7 @@ import { publishArticleToSocials } from "@/lib/social-publish.functions";
 import { toast } from "sonner";
 import { LogoLink } from "@/components/site/Logo";
 import { ImageUploader } from "@/components/newsroom/ImageUploader";
+import { BodyMediaButtons } from "@/components/newsroom/BodyMediaButtons";
 import { ArticlePreview } from "@/components/newsroom/ArticlePreview";
 
 
@@ -54,6 +55,7 @@ const EMPTY: ArticleInput = {
   cover_credit: "",
   category_id: null,
   author_id: null,
+  co_author_ids: [],
   status: "brouillon",
   location: "",
   reading_minutes: 3,
@@ -74,6 +76,7 @@ function toInput(a: NewsroomArticle): ArticleInput {
     cover_credit: a.cover_credit ?? "",
     category_id: a.category_id,
     author_id: a.author_id,
+    co_author_ids: a.co_author_ids ?? [],
     status: a.status,
     location: a.location ?? "",
     reading_minutes: a.reading_minutes,
@@ -113,6 +116,7 @@ function ArticleEditor() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (existing.data) {
@@ -186,6 +190,10 @@ function ArticleEditor() {
     (ctx.data?.categories ?? []).find((c) => c.id === form.category_id)?.name ?? null;
   const authorName =
     (ctx.data?.authors ?? []).find((a) => a.id === form.author_id)?.display_name ?? null;
+  const coAuthorNames = (ctx.data?.authors ?? [])
+    .filter((a) => form.co_author_ids.includes(a.id))
+    .map((a) => a.display_name);
+  const bylineName = [authorName, ...coAuthorNames].filter(Boolean).join(" et ") || null;
 
 
   return (
@@ -272,15 +280,23 @@ function ArticleEditor() {
             <label htmlFor="body" className={labelCls}>
               Corps de l'article
             </label>
+            <div className="mb-2">
+              <BodyMediaButtons
+                textareaRef={bodyRef}
+                onInsert={(value) => set("body", value)}
+              />
+            </div>
             <textarea
               id="body"
+              ref={bodyRef}
               rows={18}
               value={form.body}
               onChange={(e) => set("body", e.target.value)}
               className={`${field} font-serif leading-relaxed`}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              Séparez les paragraphes par une ligne vide.
+              Séparez les paragraphes par une ligne vide. Utilisez les boutons ci-dessus pour
+              insérer une photo ou une vidéo à l'endroit du curseur.
             </p>
           </div>
 
@@ -367,6 +383,40 @@ function ArticleEditor() {
                 className={field}
               />
             </div>
+          </div>
+
+          <div>
+            <span className={labelCls}>Autres journalistes signataires</span>
+            <div className="flex flex-wrap gap-3 rounded-md border border-rule p-3">
+              {(ctx.data?.authors ?? []).filter((a) => a.id !== form.author_id).length === 0 ? (
+                <p className="text-xs text-muted-foreground">
+                  Aucun autre journaliste disponible.
+                </p>
+              ) : (
+                (ctx.data?.authors ?? [])
+                  .filter((a) => a.id !== form.author_id)
+                  .map((a) => (
+                    <label key={a.id} className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={form.co_author_ids.includes(a.id)}
+                        onChange={(e) =>
+                          set(
+                            "co_author_ids",
+                            e.target.checked
+                              ? [...form.co_author_ids, a.id]
+                              : form.co_author_ids.filter((id) => id !== a.id),
+                          )
+                        }
+                      />
+                      {a.display_name}
+                    </label>
+                  ))
+              )}
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Coché(s) : co-signature(s) affichée(s) après l'auteur principal.
+            </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -476,7 +526,7 @@ function ArticleEditor() {
             cover_url: form.cover_url,
             cover_credit: form.cover_credit,
             categoryName,
-            authorName,
+            authorName: bylineName,
             location: form.location,
             reading_minutes: Number(form.reading_minutes) || 3,
             is_breaking: form.is_breaking,

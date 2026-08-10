@@ -7,6 +7,7 @@ import type { ArticleCardData, ArticleFull } from "@/lib/news-types";
 import { ArticleCard } from "@/components/site/ArticleCard";
 import { formatDateTime, isoDate } from "@/lib/format";
 import { AuthorByline, xHandle } from "@/components/site/AuthorByline";
+import { ArticleBody } from "@/components/site/ArticleBody";
 import { ArticleTranslate } from "@/components/site/ArticleTranslate";
 import { ShareBar } from "@/components/site/ShareBar";
 import { SmartImage } from "@/components/site/SmartImage";
@@ -80,13 +81,11 @@ export const Route = createFileRoute("/$slug")({
             articleSection: a.category?.name,
             ...(image ? { image: [image] } : {}),
             author: a.author?.display_name
-              ? {
+              ? [a.author, ...(a.coAuthors ?? [])].map((p) => ({
                   "@type": "Person",
-                  name: a.author.display_name,
-                  ...(xHandle(a.author)
-                    ? { sameAs: [`https://x.com/${xHandle(a.author)}`] }
-                    : {}),
-                }
+                  name: p.display_name,
+                  ...(xHandle(p) ? { sameAs: [`https://x.com/${xHandle(p)}`] } : {}),
+                }))
               : undefined,
 
             publisher: {
@@ -159,7 +158,6 @@ function ArticlePage() {
   const title = translated?.title ?? article.title;
   const dek = translated ? translated.dek : article.dek;
   const body = translated?.body ?? article.body ?? "";
-  const paragraphs = body.split(/\n{2,}/).filter(Boolean);
 
   return (
     <article className="mx-auto max-w-[1200px] px-4 py-8" lang={lang}>
@@ -240,7 +238,7 @@ function ArticlePage() {
               <p className="mt-4 font-sans text-lg leading-relaxed text-muted-foreground">{dek}</p>
             ) : null}
             <div className="rule-top mt-5 pt-4">
-              <AuthorByline author={article.author} />
+              <AuthorByline author={article.author} coAuthors={article.coAuthors} />
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-xs text-muted-foreground">
               <time dateTime={isoDate(article.published_at)}>
@@ -285,9 +283,7 @@ function ArticlePage() {
           ) : null}
 
           <div className="prose-article mt-8">
-            {paragraphs.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
+            <ArticleBody body={body} />
           </div>
 
           {article.tags?.length ? (
