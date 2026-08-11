@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import type { ArticleCardData } from "./news-types";
 
 const CARD_SELECT =
-  "slug,title,dek,cover_url,published_at,location,reading_minutes,is_breaking,category:categories!articles_category_id_fkey(slug,name),author:authors(slug,display_name,avatar_url,twitter)";
+  "slug,title,dek,cover_url,published_at,location,reading_minutes,is_breaking,category:categories!articles_category_id_fkey(slug,name),author:authors!articles_author_id_fkey(slug,display_name,avatar_url,twitter)";
 
 function toDateRange(isoDate: string) {
   const parts = isoDate.split("-").map((v) => parseInt(v, 10));

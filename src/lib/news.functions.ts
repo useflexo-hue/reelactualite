@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import type { ArticleCardData, ArticleFull, CategoryItem, HomeData } from "./news-types";
 
 const CARD_SELECT =
-  "slug,title,dek,cover_url,published_at,location,reading_minutes,is_breaking,category:categories!articles_category_id_fkey(slug,name),author:authors(slug,display_name,avatar_url,twitter)";
+  "slug,title,dek,cover_url,published_at,location,reading_minutes,is_breaking,category:categories!articles_category_id_fkey(slug,name),author:authors!articles_author_id_fkey(slug,display_name,avatar_url,twitter)";
 
 const CARD_SELECT_INNER = CARD_SELECT.replace("categories!articles_category_id_fkey(", "categories!articles_category_id_fkey!inner(");
 
@@ -131,7 +131,7 @@ export const getArticle = createServerFn({ method: "GET" })
       const { data: rows } = await db
         .from("articles")
         .select(
-          "id,slug,title,dek,body,cover_url,cover_credit,published_at,location,reading_minutes,is_breaking,seo_title,seo_description,view_count,share_count,category:categories!articles_category_id_fkey(slug,name),author:authors(slug,display_name,role_label,bio,city,avatar_url,twitter),article_tags(tags(slug,name)),article_authors(position,authors(slug,display_name,avatar_url,twitter))",
+          "id,slug,title,dek,body,cover_url,cover_credit,published_at,location,reading_minutes,is_breaking,seo_title,seo_description,view_count,share_count,category:categories!articles_category_id_fkey(slug,name),author:authors!articles_author_id_fkey(slug,display_name,role_label,bio,city,avatar_url,twitter),article_tags(tags(slug,name)),article_authors(position,authors(slug,display_name,avatar_url,twitter))",
         )
         .eq("slug", data.slug)
         .eq("status", "publie")

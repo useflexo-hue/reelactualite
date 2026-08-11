@@ -1,7 +1,7 @@
 export const SEARCH_PAGE_SIZE = 12;
 
 export const SEARCH_SELECT =
-  "slug,title,dek,cover_url,published_at,location,reading_minutes,is_breaking,category:categories!articles_category_id_fkey(slug,name),author:authors(slug,display_name,avatar_url,twitter)";
+  "slug,title,dek,cover_url,published_at,location,reading_minutes,is_breaking,category:categories!articles_category_id_fkey(slug,name),author:authors!articles_author_id_fkey(slug,display_name,avatar_url,twitter)";
 
 /**
  * Construit le filtre PostgREST `or=(...)` en neutralisant les caractères
