@@ -195,3 +195,41 @@ export const deleteNewsroomArticle = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+function slugifyAuthorName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+export const createNewsroomAuthor = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { display_name: string }) => input)
+  .handler(async ({ data, context }): Promise<{ id: string; display_name: string }> => {
+    const displayName = data.display_name?.trim();
+    if (!displayName) throw new Error("Le nom du journaliste est obligatoire.");
+
+    const baseSlug = slugifyAuthorName(displayName) || "journaliste";
+    let slug = baseSlug;
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const { data: clash } = await context.supabase
+        .from("authors")
+        .select("id")
+        .eq("slug", slug)
+        .maybeSingle();
+      if (!clash) break;
+      slug = `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`;
+    }
+
+    const { data: inserted, error } = await context.supabase
+      .from("authors")
+      .insert({ slug, display_name: displayName })
+      .select("id,display_name")
+      .single();
+    if (error) throw new Error(error.message);
+    return inserted;
+  });

@@ -3,11 +3,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import {
+  createNewsroomAuthor,
   getNewsroomArticle,
   getNewsroomContext,
   saveNewsroomArticle,
   type ArticleInput,
   type NewsroomArticle,
+  type NewsroomContext,
 } from "@/lib/newsroom.functions";
 import { publishArticleToSocials } from "@/lib/social-publish.functions";
 import { toast } from "sonner";
@@ -101,6 +103,7 @@ function ArticleEditor() {
   const fetchArticle = useServerFn(getNewsroomArticle);
   const save = useServerFn(saveNewsroomArticle);
   const broadcast = useServerFn(publishArticleToSocials);
+  const createAuthor = useServerFn(createNewsroomAuthor);
 
 
   const ctx = useQuery({ queryKey: ["newsroom", "context"], queryFn: () => fetchContext() });
@@ -117,7 +120,9 @@ function ArticleEditor() {
   const [saving, setSaving] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
-
+  const [newAuthorName, setNewAuthorName] = useState("");
+  const [addingAuthor, setAddingAuthor] = useState(false);
+  const [addAuthorError, setAddAuthorError] = useState<string | null>(null);
   useEffect(() => {
     if (existing.data) {
       setForm(toInput(existing.data));
@@ -127,6 +132,36 @@ function ArticleEditor() {
 
   function set<K extends keyof ArticleInput>(key: K, value: ArticleInput[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  async function handleAddAuthor() {
+    const displayName = newAuthorName.trim();
+    if (!displayName) return;
+    setAddingAuthor(true);
+    setAddAuthorError(null);
+    try {
+      const created = await createAuthor({ data: { display_name: displayName } });
+      queryClient.setQueryData(
+        ["newsroom", "context"],
+        (prev: NewsroomContext | undefined) =>
+          prev
+            ? {
+                ...prev,
+                authors: [...prev.authors, created].sort((a, b) =>
+                  a.display_name.localeCompare(b.display_name),
+                ),
+              }
+            : prev,
+      );
+      set("co_author_ids", [...form.co_author_ids, created.id]);
+      setNewAuthorName("");
+    } catch (err) {
+      setAddAuthorError(
+        err instanceof Error ? err.message : "Impossible d'ajouter ce journaliste.",
+      );
+    } finally {
+      setAddingAuthor(false);
+    }
   }
 
   function onSubmit(e: React.FormEvent) {
@@ -414,6 +449,31 @@ function ArticleEditor() {
                   ))
               )}
             </div>
+            <div className="mt-2 flex gap-2">
+              <input
+                value={newAuthorName}
+                onChange={(e) => setNewAuthorName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    void handleAddAuthor();
+                  }
+                }}
+                placeholder="Ajouter un journaliste absent de la liste"
+                className={field}
+              />
+              <button
+                type="button"
+                onClick={() => void handleAddAuthor()}
+                disabled={addingAuthor || !newAuthorName.trim()}
+                className="shrink-0 rounded-md border border-rule px-3 py-2 text-sm font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {addingAuthor ? "Ajout…" : "Ajouter"}
+              </button>
+            </div>
+            {addAuthorError ? (
+              <p className="mt-1 text-xs text-destructive">{addAuthorError}</p>
+            ) : null}
             <p className="mt-1 text-xs text-muted-foreground">
               Coché(s) : co-signature(s) affichée(s) après l'auteur principal.
             </p>
